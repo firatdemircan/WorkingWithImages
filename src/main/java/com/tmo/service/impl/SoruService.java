@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,28 +23,14 @@ import java.util.UUID;
  * CreatedFor WorkingWithImages
  */
 @Service
+@RequiredArgsConstructor
 public class SoruService implements ISoruService {
 
     private final SoruRepo soruRepo;
-    private final Path fileStorageLocation;
 
     @Value("${file.upload-dir}")
     private String uploadPath;
 
-    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(Paths.get(uploadPath));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload folder!");
-        }
-    }
-
-    public SoruService(SoruRepo soruRepo, Path fileStorageLocation)
-    {
-        this.soruRepo = soruRepo;
-        this.fileStorageLocation = Paths.get(uploadPath);
-    }
 
     @Override
     public SoruEntity add(SoruSaveDTO soruSaveDTO, MultipartFile file) throws IOException {
@@ -64,8 +49,9 @@ public class SoruService implements ISoruService {
     private UUID saveFile(MultipartFile file) throws IOException {
 
         UUID fileName = UUID.randomUUID();
-        Path targetLocation = this.fileStorageLocation.resolve(String.valueOf(fileName));
-        Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+        Path targetLocation = Paths.get(uploadPath+fileName+".jpg");
+//        Path targetLocation = this.fileStorageLocation.resolve(String.valueOf(fileName));
+        Files.copy(file.getInputStream(), targetLocation);
         return fileName;
     }
 

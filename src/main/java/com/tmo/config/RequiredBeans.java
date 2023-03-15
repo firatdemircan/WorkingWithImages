@@ -11,19 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * CreatedFor WorkingWithImages
  */
 @Configuration
-public class RequiredBeans implements WebMvcConfigurer {
+public class RequiredBeans{
 
-    final Environment environment;
-
-    public RequiredBeans(Environment environment) {
-        this.environment = environment;
-    }
-
-    @Override
-    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        String location = environment.getProperty("app.file.storage.mapping");
-
-        registry.addResourceHandler("/uploads/**").addResourceLocations(location);
-    }
 
 }

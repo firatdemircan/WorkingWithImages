@@ -22,7 +22,9 @@ public class SoruController {
     private final ISoruService soruService;
 
     @PostMapping("/add")
-    public SoruEntity addSoru(@RequestBody SoruSaveDTO soruSaveDTO, @RequestParam("file") MultipartFile file) throws IOException {
+    public SoruEntity addSoru(@RequestParam("file") MultipartFile file) throws IOException {
+        SoruSaveDTO soruSaveDTO = new SoruSaveDTO();
+        soruSaveDTO.setSoruText("deneme 123");
         return soruService.add(soruSaveDTO,file);
     }
 
