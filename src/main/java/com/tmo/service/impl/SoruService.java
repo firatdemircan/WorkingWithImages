@@ -6,6 +6,8 @@ import com.tmo.repository.SoruRepo;
 import com.tmo.service.ISoruService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,10 +50,29 @@ public class SoruService implements ISoruService {
 
     private UUID saveFile(MultipartFile file) throws IOException {
 
+        String FTP_ADDRESS = "ftp.euphrateapps.com";
+        String LOGIN = "firatdemircan@euphrateapps.com";
+        String PSW = "firat4744.";
+
+        FTPClient con = null;
         UUID fileName = UUID.randomUUID();
-        Path targetLocation = Paths.get(uploadPath+fileName+".jpg");
-//        Path targetLocation = this.fileStorageLocation.resolve(String.valueOf(fileName));
-        Files.copy(file.getInputStream(), targetLocation);
+
+        try {
+            con = new FTPClient();
+            con.connect(FTP_ADDRESS);
+
+            if (con.login(LOGIN, PSW)) {
+                con.enterLocalPassiveMode(); // important!
+                con.setFileType(FTP.BINARY_FILE_TYPE);
+
+                boolean result = con.storeFile(String.valueOf(fileName)+".jpg", file.getInputStream());
+                con.logout();
+                con.disconnect();
+
+            }
+        } catch (Exception e) {
+
+        }
         return fileName;
     }
 
