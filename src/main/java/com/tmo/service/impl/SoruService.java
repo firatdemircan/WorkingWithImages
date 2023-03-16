@@ -30,8 +30,12 @@ public class SoruService implements ISoruService {
 
     private final SoruRepo soruRepo;
 
-    @Value("${file.upload-dir}")
-    private String uploadPath;
+    @Value("${ftp.adress}")
+    String FTP_ADDRESS;
+    @Value("${ftp.password}")
+    String LOGIN;
+    @Value("${ftp.user}")
+    String PSW;
 
 
     @Override
@@ -50,9 +54,7 @@ public class SoruService implements ISoruService {
 
     private UUID saveFile(MultipartFile file) throws IOException {
 
-        String FTP_ADDRESS = "ftp.euphrateapps.com";
-        String LOGIN = "firatdemircan@euphrateapps.com";
-        String PSW = "firat4744.";
+
 
         FTPClient con = null;
         UUID fileName = UUID.randomUUID();
